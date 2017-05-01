@@ -1,4 +1,9 @@
 .vscode
-build
+build/
 tags
 .editorconfig
+.cproject
+.project
+.pydevproject
+.settings/
+
