@@ -13,9 +13,16 @@ public:
   /*
   * Coefficients
   */ 
-  double Kp;
-  double Ki;
-  double Kd;
+  double m_Kp;
+  double m_Ki;
+  double m_Kd;
+
+  bool m_firstcte;
+  double m_prev_cte;
+  double m_int_cte;
+  double m_steer_value;
+  double m_total_err;
+  int m_cnt;
 
   /*
   * Constructor
