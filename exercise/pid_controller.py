@@ -109,7 +109,7 @@ robot.set(0, 1, 0)
 robot.set_steering_drift(10/180 * math.pi)
 
 
-def run(robot, tau_p, tau_d, tau_i, n=100, speed=1.0):
+def run(robot, tau_p, tau_d, tau_i, n=50000, speed=1.0):
     x_trajectory = []
     y_trajectory = []
     prev_cte = robot.y
