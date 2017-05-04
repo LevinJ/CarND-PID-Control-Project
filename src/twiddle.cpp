@@ -23,7 +23,7 @@ Twiddle::~Twiddle() {
 }
 void Twiddle::run() {
 	cout << "start fine tuning PID gains" << endl;
-	double tol=0.2;
+	double tol=0.002;
 	double p[3] = {0, 0, 0};
 	double dp[3] = {1, 1, 1};
 	int it = 0;
@@ -39,6 +39,7 @@ void Twiddle::run() {
 			if (err < best_err){
 				best_err = err;
 				dp[i] *= 1.1;
+				cout <<"best err "<< best_err <<" kp, "<<p[0]<<"ki, "<<p[1]<<"kd, "<<p[2]<<endl;
 				continue;
 			}
 			p[i] -= 2 * dp[i];
@@ -46,6 +47,7 @@ void Twiddle::run() {
 			if (err < best_err){
 				best_err = err;
 				dp[i] *= 1.1;
+				cout <<"best err "<< best_err <<" kp, "<<p[0]<<"ki, "<<p[1]<<"kd, "<<p[2]<<endl;
 				continue;
 			}
 			p[i] += dp[i];
@@ -54,14 +56,14 @@ void Twiddle::run() {
 		it += 1;
 		sum_dp = dp[0] + dp[1] + dp[2];
 	}
-	cout << "Best P: "<<p <<",Best err: "<<best_err<< endl;
+	cout << "#######Best Param: "<<"kp, "<<p[0]<<"ki, "<<p[1]<<"kd, "<<p[2] <<",Best err: "<<best_err<< endl;
 
 }
 
 
 
 double Twiddle::process_cte(double cte, double &reset_sim){
-	std::cout << "Twiddle::process_cte"<<cte << endl;
+	std::cout << "Twiddle::process_cte "<<cte << endl;
 
 	{
 		std::lock_guard<std::mutex> lk(m_m);
@@ -86,7 +88,7 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 	PID pid = PID();
 	pid.Init(kp,ki,kd);
 	int count = 3000;
-	cout<<"Try a new set of parameters "<<kp<<"," << ki<<"," <<kd<<endl;
+	cout<<"#######Try a new set of parameters "<<kp<<"," << ki<<"," <<kd<<endl;
 	for(int i=1; i<= count; i++){
 		cout<<"twiddle iteration "<< i<< " out of "<< count <<endl;
 		// Wait until main() sends data
@@ -104,11 +106,11 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 			Twiddle::m_reset_sim = true;
 		}
 		bool exit_this_param = false;
-		if(abs(m_cte)> 5.4){
+		if(abs(m_cte)> 5.0){
 			//car already crashed, no need to further collect its total error
 			Twiddle::m_reset_sim = true;
 			exit_this_param = true;
-			pid.m_total_err = pid.m_total_err + (count - i)*8.0;
+			pid.m_total_err = pid.m_total_err + (count - i)*36.0;
 		}
 		m_processed = true;
 		m_ready = false;
@@ -125,7 +127,7 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 
 
 	}
-
+	std::cout << "########total error" << pid.m_total_err << std::endl;
 	return pid.m_total_err;
 
 }

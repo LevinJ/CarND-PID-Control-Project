@@ -36,9 +36,10 @@ void PID::UpdateError(double cte) {
 	m_int_cte += cte;
 	m_steer_value = -m_Kp * cte - m_Kd * diff_cte - m_Ki * m_int_cte;
 	m_cnt++;
-	if(m_cnt > 100){
-		m_total_err += cte * cte;
-	}
+	m_total_err += cte * cte;
+//	if(m_cnt > 100){
+//		m_total_err += cte * cte;
+//	}
 }
 
 double PID::TotalError() {
