@@ -5,6 +5,7 @@
 #include <math.h>
 #include "twiddle.h"
 
+
 // for convenience
 using json = nlohmann::json;
 
@@ -65,7 +66,7 @@ int main()
 					//          pid.UpdateError(cte);
 					//          steer_value = pid.m_steer_value;
 					if(bSim_was_reset){
-						if(cte > 1){
+						if(fabs(cte) > 1){
 							//last simulator reset is not successfully, do it again
 							std::cout <<"reset the simulator, recover"<<std::endl;
 							std::string reset_msg = "42[\"reset\", {}]";
