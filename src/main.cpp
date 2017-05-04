@@ -38,7 +38,7 @@ int main()
 	Twiddle twiddle;
 	bool bSim_was_reset = true;
 	// TODO: Initialize the pid variable.
-	pid.Init(.125 , .0001 , 0.797906);
+	pid.Init(1,0,8.086664);
 	std::thread t = twiddle.launch_twiddle();
 
 	h.onMessage([&pid, &twiddle, &bSim_was_reset](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -63,8 +63,21 @@ int main()
 					 * NOTE: Feel free to play around with the throttle and speed. Maybe use
 					 * another PID controller to control the speed!
 					 */
-					//          pid.UpdateError(cte);
-					//          steer_value = pid.m_steer_value;
+					bool do_finetune = false;
+					if(! do_finetune){
+						pid.UpdateError(cte);
+						steer_value = pid.m_steer_value;
+						json msgJson;
+						msgJson["steering_angle"] = steer_value;
+						msgJson["throttle"] = 0.3;
+						auto msg = "42[\"steer\"," + msgJson.dump() + "]";
+						std::cout << msg << std::endl;
+						ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+						return;
+
+					}
+
+
 					if(bSim_was_reset){
 						if(fabs(cte) > 1){
 							//last simulator reset is not successfully, do it again
@@ -95,6 +108,7 @@ int main()
 //						std::cout << msg << std::endl;
 						ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 					}
+
 				}
 			} else {
 				// Manual driving

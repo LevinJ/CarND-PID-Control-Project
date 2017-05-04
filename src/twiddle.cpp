@@ -86,7 +86,7 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 
 	PID pid = PID();
 	pid.Init(kp,ki,kd);
-	int count = 6000;
+	int count = 3000;
 	cout<<"#######run_twiddle_iteration start "<<kp<<"," << ki<<"," <<kd<<endl;
 	for(int i=1; i<= count; i++){
 		// Wait until main() sends data
