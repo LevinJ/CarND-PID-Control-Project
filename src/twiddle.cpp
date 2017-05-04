@@ -93,7 +93,7 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 		std::unique_lock<std::mutex> lk(m_m);
 		m_cv.wait(lk, []{return m_ready;});
 
-		cout<<"twiddle iteration "<< i<< " out of "<< count <<endl;
+//		cout<<"twiddle iteration "<< i<< " out of "<< count <<endl;
 		pid.UpdateError(m_cte);
 		m_steer_value = pid.m_steer_value;
 
@@ -105,15 +105,15 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 			Twiddle::m_reset_sim = true;
 		}
 		bool exit_this_param = false;
-		if(abs(m_cte)> 5.0){
+		if(abs(m_cte)> 2.0){
 			//car already crashed, no need to further collect its total error
 			Twiddle::m_reset_sim = true;
 			exit_this_param = true;
-			pid.m_total_err = pid.m_total_err + (count - i)*36.0;
+			pid.m_total_err = pid.m_total_err + (count - i)*9.0;
 		}
 		m_processed = true;
 		m_ready = false;
-		cout<<"twiddle iteration end "<< count <<endl;
+//		cout<<"twiddle iteration end "<< count <<endl;
 
 		// Manual unlocking is done before notifying, to avoid waking up
 		// the waiting thread only to block again (see notify_one for details)
@@ -124,7 +124,7 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 			break;
 		}
 	}
-	std::cout << "########run_twiddle_iteration start end " << pid.m_total_err << std::endl;
+	std::cout << "########run_twiddle_iteration end " << pid.m_total_err << std::endl;
 	return pid.m_total_err;
 
 }
