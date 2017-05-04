@@ -35,7 +35,7 @@ int main()
 
 	PID pid;
 	Twiddle twiddle;
-	bool bSim_was_reset = false;
+	bool bSim_was_reset = true;
 	// TODO: Initialize the pid variable.
 	pid.Init(.125 , .0001 , 0.797906);
 	std::thread t = twiddle.launch_twiddle();
