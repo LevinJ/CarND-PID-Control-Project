@@ -25,8 +25,9 @@ void PID::UpdateError(double cte) {
 		m_prev_cte = cte;
 		m_int_cte = 0;
 		m_total_err = 0;
-		m_firstcte = false;
 		m_cnt = 0;
+
+		m_firstcte = false;
 	}
 
 	//calculate the steer value

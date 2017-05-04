@@ -3,6 +3,7 @@
 #include "json.hpp"
 #include "PID.h"
 #include <math.h>
+#include "twiddle.h"
 
 // for convenience
 using json = nlohmann::json;
@@ -33,10 +34,12 @@ int main()
   uWS::Hub h;
 
   PID pid;
+  Twiddle twiddle;
   // TODO: Initialize the pid variable.
   pid.Init(.125 , .0001 , 0.797906);
+  std::thread t = twiddle.launch_twiddle();
 
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  h.onMessage([&pid, &twiddle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -58,8 +61,11 @@ int main()
           * NOTE: Feel free to play around with the throttle and speed. Maybe use
           * another PID controller to control the speed!
           */
-          pid.UpdateError(cte);
-          steer_value = pid.m_steer_value;
+//          pid.UpdateError(cte);
+//          steer_value = pid.m_steer_value;
+          double reset_sim;
+          steer_value = twiddle.process_cte(cte,reset_sim);
+
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
@@ -69,6 +75,12 @@ int main()
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+
+          if(reset_sim){
+        	  std::cout <<"reset the simulator"<<std::endl;
+        	  std::string reset_msg = "42[\"reset\", {}]";
+        	  ws.send(reset_msg.data(), reset_msg.length(), uWS::OpCode::TEXT);
+          }
         }
       } else {
         // Manual driving
@@ -113,4 +125,5 @@ int main()
     return -1;
   }
   h.run();
+  t.join();
 }
