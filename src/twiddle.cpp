@@ -85,7 +85,7 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 
 	PID pid = PID();
 	pid.Init(kp,ki,kd);
-	int count = 1000;
+	int count = 3000;
 	cout<<"Try a new set of parameters "<<kp<<"," << ki<<"," <<kd<<endl;
 	for(int i=1; i<= count; i++){
 		cout<<"twiddle iteration "<< i<< " out of "<< count <<endl;
@@ -103,13 +103,13 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 		if(i == count){
 			Twiddle::m_reset_sim = true;
 		}
-//		bool exit_this_param = false;
-//		if(abs(m_cte)> 3.0){
-//			//car already crashed, no need to further collect its total error
-//			Twiddle::m_reset_sim = true;
-//			exit_this_param = true;
-//			pid.m_total_err = pid.m_total_err + (count - i)*4.0;
-//		}
+		bool exit_this_param = false;
+		if(abs(m_cte)> 5.4){
+			//car already crashed, no need to further collect its total error
+			Twiddle::m_reset_sim = true;
+			exit_this_param = true;
+			pid.m_total_err = pid.m_total_err + (count - i)*8.0;
+		}
 		m_processed = true;
 		m_ready = false;
 		std::cout << "Worker thread signals data processing completed\n";
@@ -119,9 +119,9 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 		lk.unlock();
 		m_cv.notify_one();
 
-//		if(exit_this_param){
-//			break;
-//		}
+		if(exit_this_param){
+			break;
+		}
 
 
 	}
