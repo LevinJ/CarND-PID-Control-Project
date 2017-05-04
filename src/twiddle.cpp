@@ -63,7 +63,7 @@ void Twiddle::run() {
 
 
 double Twiddle::process_cte(double cte, double &reset_sim){
-	std::cout << "process_cte, data ready"<<cte << endl;
+	std::cout << "ready "<<cte << endl;
 
 	{
 		std::lock_guard<std::mutex> lk(m_m);
@@ -78,7 +78,7 @@ double Twiddle::process_cte(double cte, double &reset_sim){
 		m_cv.wait(lk, []{return m_processed;});
 	}
 	reset_sim = m_reset_sim;
-	std::cout << "process_cte, data processed  " << m_steer_value << "reset "<< reset_sim <<'\n';
+	std::cout << "processed  " << m_steer_value <<endl;
 	return m_steer_value;
 }
 

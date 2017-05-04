@@ -35,11 +35,12 @@ int main()
 
 	PID pid;
 	Twiddle twiddle;
+	bool bSim_was_reset = false;
 	// TODO: Initialize the pid variable.
 	pid.Init(.125 , .0001 , 0.797906);
 	std::thread t = twiddle.launch_twiddle();
 
-	h.onMessage([&pid, &twiddle](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+	h.onMessage([&pid, &twiddle, &bSim_was_reset](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
 		// "42" at the start of the message means there's a websocket message event.
 		// The 4 signifies a websocket message
 		// The 2 signifies a websocket event
@@ -63,6 +64,17 @@ int main()
 					 */
 					//          pid.UpdateError(cte);
 					//          steer_value = pid.m_steer_value;
+					if(bSim_was_reset){
+						if(cte > 1){
+							//last simulator reset is not successfully, do it again
+							std::cout <<"reset the simulator, recover"<<std::endl;
+							std::string reset_msg = "42[\"reset\", {}]";
+							ws.send(reset_msg.data(), reset_msg.length(), uWS::OpCode::TEXT);
+							return;
+						}else{
+							bSim_was_reset = false;
+						}
+					}
 					double reset_sim;
 					steer_value = twiddle.process_cte(cte,reset_sim);
 
@@ -70,6 +82,7 @@ int main()
 					//          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
 					if(reset_sim){
+						bSim_was_reset = true;
 						std::cout <<"reset the simulator"<<std::endl;
 						std::string reset_msg = "42[\"reset\", {}]";
 						ws.send(reset_msg.data(), reset_msg.length(), uWS::OpCode::TEXT);
@@ -78,7 +91,7 @@ int main()
 						msgJson["steering_angle"] = steer_value;
 						msgJson["throttle"] = 0.3;
 						auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-						std::cout << msg << std::endl;
+//						std::cout << msg << std::endl;
 						ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 					}
 				}
