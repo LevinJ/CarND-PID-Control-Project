@@ -26,7 +26,7 @@ tau_p * cte : Proportional Controller
 tau_i * int_cte:  Integral Controller  
 tau_d * diff_cte: Differential Controller  
 
-The purpose of P controller is to aggressively reduce car's next cross track error. Only using P controller is not enough for effective car driving, the car will overshoot and drive off track very quickly, as shown in this video.
+The purpose of P controller is to aggressively reduce car's next cross track error. Only using P controller is not enough for effective car driving, the car will overshoot and drive off track very quickly, as evidenced in my experiment of setting D controller coefficient as zero.
 
 The purpose of D controller is to reduce the oscillation problems in P controller. With D Controller added, we can see overshooting problem is visibly reduced.
 
