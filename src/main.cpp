@@ -37,7 +37,7 @@ int main()
 	PID pid;
 	Twiddle twiddle;
 	bool bSim_was_reset = true;
-	// TODO: Initialize the pid variable.
+	// Initialize PID controller: proportional coefficient,integral coefficient,differential coefficient
 	pid.Init(32.7713, 0, 74.8867);
 	std::thread t = twiddle.launch_twiddle();
 
@@ -63,9 +63,11 @@ int main()
 					 * NOTE: Feel free to play around with the throttle and speed. Maybe use
 					 * another PID controller to control the speed!
 					 */
-					std::cout <<"cte "<<cte<<std::endl;
-					bool do_finetune = false;
+
+					bool do_finetune = true;
+					//Use PID controller to control the steering angle
 					if(! do_finetune){
+						std::cout <<"cte "<<cte<<std::endl;
 						pid.UpdateError(cte);
 						steer_value = pid.m_steer_value;
 						json msgJson;
@@ -78,10 +80,10 @@ int main()
 
 					}
 
-
+					//Fine tune PID controller Gains using twiddle
 					if(bSim_was_reset){
 						if(fabs(cte) > 1){
-							//last simulator reset is not successfully, do it again
+							//sometimes simulator reset may not work properly, so do it again
 //							std::cout <<"reset the simulator, recover"<<std::endl;
 							std::string reset_msg = "42[\"reset\", {}]";
 							ws.send(reset_msg.data(), reset_msg.length(), uWS::OpCode::TEXT);

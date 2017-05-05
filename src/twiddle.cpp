@@ -41,7 +41,7 @@ void Twiddle::run() {
 			double err = run_twiddle_iteration(p[0],p[1], p[2]);
 			if (err < best_err){
 				best_err = err;
-				dp[i] *= 1.5;
+				dp[i] *= 1.2;
 //				cout <<"best err "<< best_err <<" kp, "<<p[0]<<"ki, "<<p[1]<<"kd, "<<p[2]<<endl;
 				continue;
 			}
@@ -49,7 +49,7 @@ void Twiddle::run() {
 			err = run_twiddle_iteration(p[0],p[1], p[2]);
 			if (err < best_err){
 				best_err = err;
-				dp[i] *= 1.5;
+				dp[i] *= 1.2;
 //				cout <<"best err "<< best_err <<" kp, "<<p[0]<<"ki, "<<p[1]<<"kd, "<<p[2]<<endl;
 				continue;
 			}
@@ -109,8 +109,9 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 			Twiddle::m_reset_sim = true;
 		}
 		bool exit_this_param = false;
-		if(abs(m_cte)> 2.0){
-			//car already crashed, no need to further collect its total error
+		if(abs(m_cte)> 2.0 || abs(m_steer_value) == 1){
+			//car already crashed, or extreme steering value is used
+			//no need to further collect its total error
 			Twiddle::m_reset_sim = true;
 			exit_this_param = true;
 			pid.m_total_err = pid.m_total_err + (count - i)*9.0;
