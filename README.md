@@ -96,7 +96,7 @@ Twiddle is great in that it allows us to tune hyper parameters for a system with
 Currently we are using a fixed and relatively low speed. Maybe a PID controller for throttle could be a good idea to increase speed.
 
 
-Lastly, at one point, my twiddle find me a combination of PID parameters ([32.7713, 0, 74.8867]) that can drive perfectly in the track, though the steering angle it outputs are mostly 1 or -1.  It's a nice surprise to see how the "clever" twiddle comes up with answers we never initially expect. Just for fun, [here](https://youtu.be/PIkNhLrCuQA) the video that records the funny movement of the vehicle with these PID parameters.
+Lastly, while fine tuning parameters for PID controller, at one point, twiddle found a combination of PID parameters ([32.7713, 0, 74.8867]) that can drive perfectly in the track, though the steering angle it outputs are mostly 1 or -1. It's a nice surprise to see how the "clever" twiddle comes up with answers we never initially expect. Just for fun, [here](https://youtu.be/PIkNhLrCuQA) the video that records the funny movement of the vehicle with these PID parameters.
 
 
 ## Basic Build Instructions
