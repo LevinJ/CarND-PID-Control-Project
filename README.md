@@ -94,9 +94,9 @@ dp:[0.619873, 0.348678, 1.9591]
 This is a fun project in that we can see how essentially a one line equation can help us smoothly drive the car in the simulator. On the other side, there are known problems in current approach and might require future work if we are to perfect the solution.
 
 1. Twiddle fine tuning  
-Twiddle is great in that it allows us to tune hyper parameters for a system without knowing much inner working the system. The downside is that we might very well land on sub-optimal parameters. As a result, it's important to experiment different learnig step stragy in order to find optimal parameters.
+Twiddle is great in that it allows us to tune hyper parameters for a system without knowing much inner working the system. The downside is that we might very well land on sub-optimal parameters. As a result, it's important to experiment different learning step strategy in order to find optimal parameters.
 2. Vehicle speed  
-Currently we are using a fixed and relatively low spped. Maybe a PID controller for throttle could be a good idea to increase speed.
+Currently we are using a fixed and relatively low speed. Maybe a PID controller for throttle could be a good idea to increase speed.
 
 
 Lastly, at one point, my twiddle find me a combination of PID parameters ([32.7713, 0, 74.8867]) that can drive perfectly in the track, though the steering angle it outputs are mostly 1 or -1.  It's a nice surprise to see how the "clever" twiddle comes up with answers we never initially expect.
