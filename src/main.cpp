@@ -38,7 +38,7 @@ int main()
 	Twiddle twiddle;
 	bool bSim_was_reset = true;
 	// TODO: Initialize the pid variable.
-	pid.Init(0.99109, 0, 11.2215);
+	pid.Init(32.7713, 0, 74.8867);
 	std::thread t = twiddle.launch_twiddle();
 
 	h.onMessage([&pid, &twiddle, &bSim_was_reset](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -63,13 +63,14 @@ int main()
 					 * NOTE: Feel free to play around with the throttle and speed. Maybe use
 					 * another PID controller to control the speed!
 					 */
-					bool do_finetune = true;
+					std::cout <<"cte "<<cte<<std::endl;
+					bool do_finetune = false;
 					if(! do_finetune){
 						pid.UpdateError(cte);
 						steer_value = pid.m_steer_value;
 						json msgJson;
 						msgJson["steering_angle"] = steer_value;
-						msgJson["throttle"] = 0.4;
+						msgJson["throttle"] = 0.3;
 						auto msg = "42[\"steer\"," + msgJson.dump() + "]";
 						std::cout << msg << std::endl;
 						ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -103,7 +104,7 @@ int main()
 					}else{
 						json msgJson;
 						msgJson["steering_angle"] = steer_value;
-						msgJson["throttle"] = 0.4;
+						msgJson["throttle"] = 0.3;
 						auto msg = "42[\"steer\"," + msgJson.dump() + "]";
 //						std::cout << msg << std::endl;
 						ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
