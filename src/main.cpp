@@ -38,7 +38,7 @@ int main()
 	Twiddle twiddle;
 	bool bSim_was_reset = true;
 	// TODO: Initialize the pid variable.
-	pid.Init(1,0,8.086664);
+	pid.Init(0.99109, 0, 11.2215);
 	std::thread t = twiddle.launch_twiddle();
 
 	h.onMessage([&pid, &twiddle, &bSim_was_reset](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -63,13 +63,13 @@ int main()
 					 * NOTE: Feel free to play around with the throttle and speed. Maybe use
 					 * another PID controller to control the speed!
 					 */
-					bool do_finetune = false;
+					bool do_finetune = true;
 					if(! do_finetune){
 						pid.UpdateError(cte);
 						steer_value = pid.m_steer_value;
 						json msgJson;
 						msgJson["steering_angle"] = steer_value;
-						msgJson["throttle"] = 0.3;
+						msgJson["throttle"] = 0.4;
 						auto msg = "42[\"steer\"," + msgJson.dump() + "]";
 						std::cout << msg << std::endl;
 						ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -81,7 +81,7 @@ int main()
 					if(bSim_was_reset){
 						if(fabs(cte) > 1){
 							//last simulator reset is not successfully, do it again
-							std::cout <<"reset the simulator, recover"<<std::endl;
+//							std::cout <<"reset the simulator, recover"<<std::endl;
 							std::string reset_msg = "42[\"reset\", {}]";
 							ws.send(reset_msg.data(), reset_msg.length(), uWS::OpCode::TEXT);
 							return;
@@ -97,13 +97,13 @@ int main()
 
 					if(reset_sim){
 						bSim_was_reset = true;
-						std::cout <<"reset the simulator"<<std::endl;
+//						std::cout <<"reset the simulator"<<std::endl;
 						std::string reset_msg = "42[\"reset\", {}]";
 						ws.send(reset_msg.data(), reset_msg.length(), uWS::OpCode::TEXT);
 					}else{
 						json msgJson;
 						msgJson["steering_angle"] = steer_value;
-						msgJson["throttle"] = 0.3;
+						msgJson["throttle"] = 0.4;
 						auto msg = "42[\"steer\"," + msgJson.dump() + "]";
 //						std::cout << msg << std::endl;
 						ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
@@ -134,7 +134,7 @@ int main()
 	});
 
 	h.onConnection([&h](uWS::WebSocket<uWS::SERVER> ws, uWS::HttpRequest req) {
-		std::cout << "Connected!!!" << std::endl;
+//		std::cout << "Connected!!!" << std::endl;
 	});
 
 	h.onDisconnection([&h](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {

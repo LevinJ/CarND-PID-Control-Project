@@ -18,6 +18,8 @@ public:
 
 	double m_cte;
 	double m_steer_value;
+
+	double m_max_step;
 	/*
 	 * Constructor
 	 */
