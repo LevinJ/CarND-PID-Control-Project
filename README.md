@@ -3,22 +3,104 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
-## Dependencies
+### Overview
+The goals / steps of this project are the following:  
 
-* cmake >= 3.5
- * All OSes: [click here for installation instructions](https://cmake.org/install/)
-* make >= 4.1
-  * Linux: make is installed by default on most Linux distros
-  * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
-  * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
-* gcc/g++ >= 5.4
-  * Linux: gcc / g++ is installed by default on most Linux distros
-  * Mac: same deal as make - [install Xcode command line tools]((https://developer.apple.com/xcode/features/)
-  * Windows: recommend using [MinGW](http://www.mingw.org/)
-* [uWebSockets](https://github.com/uWebSockets/uWebSockets) == 0.13, but the master branch will probably work just fine
-  * Follow the instructions in the [uWebSockets README](https://github.com/uWebSockets/uWebSockets/blob/master/README.md) to get setup for your platform. You can download the zip of the appropriate version from the [releases page](https://github.com/uWebSockets/uWebSockets/releases). Here's a link to the [v0.13 zip](https://github.com/uWebSockets/uWebSockets/archive/v0.13.0.zip).
-  * If you run OSX and have homebrew installed you can just run the ./install-mac.sh script to install this
-* Simulator. You can download these from the [project intro page](https://github.com/udacity/CarND-PID-Control-Project/releases) in the classroom.
+* Complete PID controller in C++.
+* Tune PID controller parameters with twiddle algorithm
+* Test PID controller on the simulator and make sure the vehicle is able to drive successfully around the track.
+
+### Final Result
+
+[Here](https://www.google.com) is the video that demonstrates the vehilce controlled by PID can successfully drives around the track in the simulator.
+
+
+
+## PID components
+
+In this project, PID controller is used to derive appropriate steering angle that controls the car driving. The input to PID controller is Cross Track Error, which specifies how far away the car is away from the intended driving route (center of the road). In essence, it's a simple one line eqaution as below:  
+
+steering_angle = -tau_p * cte - tau_d * diff_cte - tau_i * int_cte 
+
+tau_p * cte : Proportional Controller  
+tau_i * int_cte:  Integral Controller  
+tau_d * diff_cte: Differential Controller  
+
+The purpose of P controller is to aggressively reduce car's next cross track error. Only using P controller is not enough for effective car driving, the car will overshoot and drive off track very quickly, as shown in this video.
+
+The purpose of D controler is to reduce the ossicilation problems in P controller. With D Controller added, we can see overshooting problem is visibly reduced.
+
+The purose of I controller is to elimiate system bais in simulator. In this project, the final I controller coefficient found by twiddle is zero. I think this is mainly because the system bias is small. Another reason could be that the twiddle algorithm never really converge at the end, in the sense that int_cte is always increasing during twiddle fine tunig.
+
+
+## PID  hyperparameter tuning
+
+Twiddle is used to fune parameters. Technially, at the start of the program, we lanuch a separate worker thread that waits on cte signal from simulator and perform twiddle algorithm. Twiddle algorithm is implemented in twiddle.cpp file.
+
+PID coefficients found by Twiddle is as below.  
+
+p: [1.57396, 0, 9.92992]
+
+And below is the search process of twiddle. From it, we can see that twiddle did a farily good job of reducing total error and thus finding optimal PID controller hyper paramters.
+
+start fine tuning PID gains
+Listening to port 4567
+improvement 0,124
+cycle 0, best error = 26027.2
+p: [0, 0, 0]
+dp:[1, 1, 1]
+improvement 124,272
+improvement 272,391
+cycle 1, best error = 23547.4
+p: [1, 0, 1]
+dp:[1.2, 0.9, 1.2]
+improvement 391,644
+cycle 2, best error = 21301.8
+p: [1, 0, 2.2]
+dp:[1.08, 0.81, 1.44]
+improvement 644,1557
+cycle 3, best error = 13127.3
+p: [1, 0, 3.64]
+dp:[0.972, 0.729, 1.728]
+improvement 1557,1615
+cycle 4, best error = 12661.3
+p: [1, 0, 5.368]
+dp:[0.8748, 0.6561, 2.0736]
+improvement 1615,2893
+cycle 5, best error = 1179.78
+p: [1, 0, 7.4416]
+dp:[0.78732, 0.59049, 2.48832]
+improvement 2893,3001
+cycle 6, best error = 160.584
+p: [1, 0, 9.92992]
+dp:[0.708588, 0.531441, 2.98598]
+cycle 7, best error = 160.584
+p: [1, 0, 9.92992]
+dp:[0.637729, 0.478297, 2.68739]
+cycle 8, best error = 160.584
+p: [1, 0, 9.92992]
+dp:[0.573956, 0.430467, 2.41865]
+cycle 9, best error = 125.863
+p: [1.57396, 0, 9.92992]
+dp:[0.688748, 0.38742, 2.17678]
+cycle 10, best error = 125.863
+p: [1.57396, 0, 9.92992]
+dp:[0.619873, 0.348678, 1.9591]
+
+
+
+## Reflection
+
+This is a fun project in that we can see how eseentailly a one line equation can help us smoothly drive the car in the simulator. On the other side, there are known problems in current apporach and might require future work if we are to perfect the solution.
+
+1. Twiddle fine tuning  
+Twiddle is great in that it allows us to tune hyper parameters for a system without knowing much inner working the system. The downside is that we might very well land on sub-optimal parameters. As a result, it's important to experiment different learnig step stragy in order to find optimal parameters.
+2. Speed
+Currently we are using a fixed and relatively low spped. Maybe a PID controller for throttle could be a good idea to increase speed.
+
+
+Lastly, at one point, my twiddle find me a combination of PID parameters ([32.7713, 0, 74.8867]) that can drively perfectly in the track, though the steering angle it outputs are mostly 1 or -1.  It's a nice surprise to see how the "clever" twiddle comes up with answers we never initialy expect.
+
 
 ## Basic Build Instructions
 
@@ -27,58 +109,3 @@ Self-Driving Car Engineer Nanodegree Program
 3. Compile: `cmake .. && make`
 4. Run it: `./pid`. 
 
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
