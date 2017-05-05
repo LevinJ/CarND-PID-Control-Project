@@ -95,7 +95,7 @@ This is a fun project in that we can see how essentially a one line equation can
 
 1. Twiddle fine tuning  
 Twiddle is great in that it allows us to tune hyper parameters for a system without knowing much inner working the system. The downside is that we might very well land on sub-optimal parameters. As a result, it's important to experiment different learnig step stragy in order to find optimal parameters.
-2. Speed
+2. Vehicle speed  
 Currently we are using a fixed and relatively low spped. Maybe a PID controller for throttle could be a good idea to increase speed.
 
 
