@@ -109,7 +109,8 @@ double Twiddle::run_twiddle_iteration(double kp,double ki, double kd){
 			Twiddle::m_reset_sim = true;
 		}
 		bool exit_this_param = false;
-		if(abs(m_cte)> 2.0 || abs(m_steer_value) == 1){
+		//if(abs(m_cte)> 2.0 || abs(m_steer_value) == 1){
+		if(abs(m_cte)> 2.0){
 			//car already crashed, or extreme steering value is used
 			//no need to further collect its total error
 			Twiddle::m_reset_sim = true;

@@ -38,7 +38,7 @@ int main()
 	Twiddle twiddle;
 	bool bSim_was_reset = true;
 	// Initialize PID controller: proportional coefficient,integral coefficient,differential coefficient
-	pid.Init(32.7713, 0, 74.8867);
+	pid.Init(1.57396, 0, 9.92992);
 	std::thread t = twiddle.launch_twiddle();
 
 	h.onMessage([&pid, &twiddle, &bSim_was_reset](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
@@ -64,7 +64,7 @@ int main()
 					 * another PID controller to control the speed!
 					 */
 
-					bool do_finetune = true;
+					bool do_finetune = false;
 					//Use PID controller to control the steering angle
 					if(! do_finetune){
 						std::cout <<"cte "<<cte<<std::endl;
