@@ -12,7 +12,7 @@ The goals / steps of this project are the following:
 
 ### Final Result
 
-[Here](https://youtu.be/mHUyWUgT7bM) is the video that demonstrates the vehicle controlled by PID can successfully drives around the track in the simulator.
+[Here](https://youtu.be/mHUyWUgT7bM) is the video that demonstrates the vehicle controlled by PID successfully drives around the track in the simulator.
 
 
 
