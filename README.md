@@ -12,7 +12,7 @@ The goals / steps of this project are the following:
 
 ### Final Result
 
-[Here](https://www.google.com) is the video that demonstrates the vehicle controlled by PID can successfully drives around the track in the simulator.
+[Here](https://youtu.be/mHUyWUgT7bM) is the video that demonstrates the vehicle controlled by PID can successfully drives around the track in the simulator.
 
 
 
@@ -37,11 +37,8 @@ The purpose of I controller is to eliminate system bias in simulator. In this pr
 
 Twiddle is used to tune parameters. Technically, at the start of the program, we lanuch a separate worker thread that waits on cte signal from simulator and perform twiddle algorithm. Twiddle algorithm is implemented in twiddle.cpp file.
 
-PID coefficients found by Twiddle is as below.   
 
-p: [1.57396, 0, 9.92992]   
-
-And below is the search process of twiddle. From it, we can see that twiddle did a farily good job of reducing total error and thus finding optimal PID controller hyper paramters.  
+Below is an example of the search process of twiddle. From it, we can see that twiddle did a farily good job of reducing total error and thus finding optimal PID controller hyper paramters.  
 
 start fine tuning PID gains  
 Listening to port 4567  
@@ -99,7 +96,7 @@ Twiddle is great in that it allows us to tune hyper parameters for a system with
 Currently we are using a fixed and relatively low speed. Maybe a PID controller for throttle could be a good idea to increase speed.
 
 
-Lastly, at one point, my twiddle find me a combination of PID parameters ([32.7713, 0, 74.8867]) that can drive perfectly in the track, though the steering angle it outputs are mostly 1 or -1.  It's a nice surprise to see how the "clever" twiddle comes up with answers we never initially expect.
+Lastly, at one point, my twiddle find me a combination of PID parameters ([32.7713, 0, 74.8867]) that can drive perfectly in the track, though the steering angle it outputs are mostly 1 or -1.  It's a nice surprise to see how the "clever" twiddle comes up with answers we never initially expect. Just for fun, [here](https://youtu.be/PIkNhLrCuQA) the video that records the funny movement of the vehicle with these PID parameters.
 
 
 ## Basic Build Instructions
