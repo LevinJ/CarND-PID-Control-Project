@@ -38,7 +38,7 @@ int main()
 	Twiddle twiddle;
 	bool bSim_was_reset = true;
 	// Initialize PID controller: proportional coefficient,integral coefficient,differential coefficient
-	pid.Init(1.57396, 0, 9.92992);
+	pid.Init(0.99109, 0, 11.2215);
 	std::thread t = twiddle.launch_twiddle();
 
 	h.onMessage([&pid, &twiddle, &bSim_was_reset](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
